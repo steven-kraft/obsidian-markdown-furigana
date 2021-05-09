@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-simple-furigana",
 	"name": "Simple Furigana",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"minAppVersion": "0.9.12",
 	"description": "Simple Markdown to Furigana Rendering Plugin for Obsidian.",
 	"author": "Steven Kraft",

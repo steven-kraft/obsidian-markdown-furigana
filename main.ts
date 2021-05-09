@@ -16,10 +16,11 @@ const convertFurigana = (element:Node): Node => {
   for (const match of matches) {
     const kanji = match[1].split('')
     const furi = match[2].split('|').slice(1) // First Element will be empty
-    if (kanji.length === furi.length) {
-      // Number of Characters in first section must be equal to number of furigana sections
+    if (kanji.length === furi.length || furi.length === 1) {
+      // Number of Characters in first section must be equal to number of furigana sections (unless only one furigana section)
       newText = newText.replace(match[0], function () {
         // Create a stringified version of the ruby HTMLElement
+        if (furi.length === 1) return `<ruby>${kanji.join('')}<rt>${furi[0]}</rt></ruby>`
         const innerHTML = kanji.map((k, i) => { return `${k}<rt>${furi[i]}</rt>` }).join('')
         return `<ruby>${innerHTML}</ruby>`
       })
