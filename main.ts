@@ -1,15 +1,65 @@
-import { Plugin } from 'obsidian';
+import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext, MarkdownPreviewRenderer } from 'obsidian';
+
+// Regular Expression for {{kanji|kana|kana|...}} format
+const REGEXP = /{((?:[一-龯]|[ぁ-んァ-ン])+)((?:\|[ぁ-んァ-ン]*)+)}/gm;
+
+// Main Tags to search for Furigana Syntax
+const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table';
+
+const convertFurigana = (element:ChildNode): ChildNode  => {
+	const text = element.textContent;
+	const matches = Array.from(text.matchAll(REGEXP));
+	if (matches.length == 0) return element;
+
+	let new_text = text;
+
+	for (const match of matches) {
+		let kanji = match[1].split('');
+		let furi  = match[2].split('|').slice(1); // First Element will be empty
+		if(kanji.length == furi.length) {
+			// Number of Characters in first section must be equal to number of furigana sections
+			new_text = new_text.replace(match[0], function(){
+				// Create a stringified version of the ruby HTMLElement
+				const innerHTML = kanji.map((k, i) => { return `${k}<rt>${furi[i]}</rt>` } ).join('')
+				return `<ruby>${innerHTML}</ruby>`;
+			});				
+		}
+	}
+
+	// Replace TextElement with new Span containing Ruby Element(s)
+	const new_element = document.createElement('span');
+	new_element.addClass('furi');
+	new_element.innerHTML = new_text;
+	return new_element;
+}
 
 export default class SimpleFurigana extends Plugin {
+	public postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
+		const blockToReplace = el.querySelector(TAGS);
+        if (!blockToReplace || !blockToReplace.innerHTML.match(REGEXP)) return;
+
+		const destination = document.createElement('p')
+		function replace(node:Node) {
+			node.childNodes.forEach(child => {
+				if(child.nodeType == 3) {
+					// Nodes of Type 3 are TextElements
+					child.replaceWith(convertFurigana(child))
+				} else if (child.hasChildNodes() && child.nodeName != "CODE") {
+					// Ignore content in Code Blocks
+					replace(child);
+				}
+			});
+		}
+		replace(blockToReplace);
+	  }
+
 	async onload() {
 		console.log('loading Simple Furigana plugin');
-
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
+		MarkdownPreviewRenderer.registerPostProcessor(this.postprocessor);
 	}
 
 	onunload() {
 		console.log('unloading Simple Furigana plugin');
+		MarkdownPreviewRenderer.unregisterPostProcessor(this.postprocessor);
 	}
 }
