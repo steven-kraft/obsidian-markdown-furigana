@@ -36,7 +36,7 @@ const convertFurigana = (element:ChildNode): ChildNode  => {
 export default class SimpleFurigana extends Plugin {
 	public postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
 		const blockToReplace = el.querySelector(TAGS);
-        if (!blockToReplace || !blockToReplace.innerHTML.match(REGEXP)) return;
+		if (!blockToReplace || !blockToReplace.innerHTML.match(REGEXP)) return;
 
 		const destination = document.createElement('p')
 		function replace(node:Node) {
