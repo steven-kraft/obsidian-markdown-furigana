@@ -34,7 +34,7 @@ const convertFurigana = (element:Node): Node => {
   return newElement
 }
 
-export default class SimpleFurigana extends Plugin {
+export default class MarkdownFurigana extends Plugin {
     public postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
       const blockToReplace = el.querySelector(TAGS)
       if (!blockToReplace || !blockToReplace.innerHTML.match(REGEXP)) return
@@ -54,12 +54,12 @@ export default class SimpleFurigana extends Plugin {
     }
 
     async onload () {
-      console.log('loading Simple Furigana plugin')
+      console.log('loading Markdown Furigana plugin')
       MarkdownPreviewRenderer.registerPostProcessor(this.postprocessor)
     }
 
     onunload () {
-      console.log('unloading Simple Furigana plugin')
+      console.log('unloading Markdown Furigana plugin')
       MarkdownPreviewRenderer.unregisterPostProcessor(this.postprocessor)
     }
 }

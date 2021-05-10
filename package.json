@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-simple-furigana",
+  "name": "obsidian-markdown-furigana",
   "version": "0.2.0",
   "description": "Simple Markdown to Furigana Rendering Plugin for Obsidian.",
   "main": "main.js",
