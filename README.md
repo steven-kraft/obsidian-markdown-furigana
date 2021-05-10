@@ -14,3 +14,6 @@ Markdown|Processed As|Displays As
 ### Additional Info
 
 The plugin expects the first section to be Kanji or Kana, and furigana sections to be Hiragana or Katakana. If more than one furigana section, there must be as many as the number of characters in the first section. Sections of furigana can also be empty.
+
+### See Also
+- Also check out [obsidian-furigana](https://github.com/uonr/obsidian-furigana) if you prefer to use the ruby syntax directly in your notes.
