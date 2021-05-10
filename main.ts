@@ -55,11 +55,10 @@ export default class MarkdownFurigana extends Plugin {
 
     async onload () {
       console.log('loading Markdown Furigana plugin')
-      MarkdownPreviewRenderer.registerPostProcessor(this.postprocessor)
+      this.registerMarkdownPostProcessor(this.postprocessor)
     }
 
     onunload () {
       console.log('unloading Markdown Furigana plugin')
-      MarkdownPreviewRenderer.unregisterPostProcessor(this.postprocessor)
     }
 }
