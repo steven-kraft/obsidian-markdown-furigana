@@ -8,6 +8,7 @@ const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table'
 
 const convertFurigana = (element:Text): Node => {
   const matches = Array.from(element.textContent.matchAll(REGEXP))
+  let lastNode = element
   for (const match of matches) {
     const furi = match[2].split('|').slice(1) // First Element will be empty
     const kanji = furi.length === 1 ? [match[1]] : match[1].split('')
@@ -19,8 +20,8 @@ const convertFurigana = (element:Text): Node => {
         rubyNode.appendText(k)
         rubyNode.createEl('rt', { text: furi[i] })
       })
-      const nodeToReplace = element.splitText(element.textContent.indexOf(match[0]))
-      element = nodeToReplace.splitText(match[0].length)
+      const nodeToReplace = lastNode.splitText(lastNode.textContent.indexOf(match[0]))      
+      lastNode = nodeToReplace.splitText(match[0].length)
       nodeToReplace.replaceWith(rubyNode)
     }
   }
