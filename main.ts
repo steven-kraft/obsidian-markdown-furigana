@@ -20,7 +20,7 @@ const convertFurigana = (element:Text): Node => {
         rubyNode.appendText(k)
         rubyNode.createEl('rt', { text: furi[i] })
       })
-      const nodeToReplace = lastNode.splitText(lastNode.textContent.indexOf(match[0]))      
+      const nodeToReplace = lastNode.splitText(lastNode.textContent.indexOf(match[0]))
       lastNode = nodeToReplace.splitText(match[0].length)
       nodeToReplace.replaceWith(rubyNode)
     }
@@ -34,14 +34,18 @@ export default class MarkdownFurigana extends Plugin {
       if (!blockToReplace) return
 
       function replace (node:Node) {
+        const childrenToReplace: Text[] = []
         node.childNodes.forEach(child => {
           if (child.nodeType === 3) {
             // Nodes of Type 3 are TextElements
-            child.replaceWith(convertFurigana(child as Text))
-          } else if (child.hasChildNodes() && child.nodeName !== 'CODE') {
+            childrenToReplace.push(child as Text)
+          } else if (child.hasChildNodes() && child.nodeName !== 'CODE' && child.nodeName !== 'RUBY') {
             // Ignore content in Code Blocks
             replace(child)
           }
+        })
+        childrenToReplace.forEach((child) => {
+          child.replaceWith(convertFurigana(child))
         })
       }
       replace(blockToReplace)
