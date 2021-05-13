@@ -15,5 +15,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "no-useless-escape": "off"
     }
 };
