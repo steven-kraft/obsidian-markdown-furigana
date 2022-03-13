@@ -30,8 +30,8 @@ const convertFurigana = (element:Text): Node => {
 
 export default class MarkdownFurigana extends Plugin {
     public postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-      const blockToReplace = el.querySelector(TAGS)
-      if (!blockToReplace) return
+      const blockToReplace = el.querySelectorAll(TAGS)
+      if (blockToReplace.length === 0) return
 
       function replace (node:Node) {
         const childrenToReplace: Text[] = []
@@ -48,7 +48,10 @@ export default class MarkdownFurigana extends Plugin {
           child.replaceWith(convertFurigana(child))
         })
       }
-      replace(blockToReplace)
+      
+      blockToReplace.forEach(block => {
+        replace(block)
+      })
     }
 
     async onload () {
