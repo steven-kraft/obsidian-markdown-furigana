@@ -1,7 +1,7 @@
 import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
 
 // Regular Expression for {{kanji|kana|kana|...}} format
-const REGEXP = /{((?:[\u4E00-\u9FFFㄅ-ㄩぁ-んァ-ンー〇])+)((?:\|[^ -\/{-~:-@\[-`]*)+)}/gm
+const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF])+)((?:\|[^ -\/{-~:-@\[-`]*)+)}/gm;
 
 // Main Tags to search for Furigana Syntax
 const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table'
