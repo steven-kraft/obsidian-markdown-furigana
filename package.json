@@ -22,9 +22,13 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
-    "obsidian": "^0.12.0",
+    "obsidian": "latest",
     "rollup": "^2.32.1",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@codemirror/rangeset": "^0.19.9",
+    "@codemirror/state": "^6.2.1"
   }
 }
