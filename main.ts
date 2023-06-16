@@ -1,5 +1,5 @@
 import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
-import { RangeSetBuilder } from "@codemirror/rangeset"
+import { RangeSetBuilder } from "@codemirror/state"
 import { ViewPlugin, WidgetType, EditorView, ViewUpdate, Decoration, DecorationSet } from '@codemirror/view'
 
 // Regular Expression for {{kanji|kana|kana|...}} format
