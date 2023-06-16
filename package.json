@@ -28,7 +28,6 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@codemirror/rangeset": "^0.19.9",
     "@codemirror/state": "^6.2.1"
   }
 }
