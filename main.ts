@@ -1,4 +1,4 @@
-import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
+import { App, Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext, PluginSettingTab, Setting, MarkdownView } from 'obsidian'
 import { RangeSetBuilder } from "@codemirror/state"
 import { ViewPlugin, WidgetType, EditorView, ViewUpdate, Decoration, DecorationSet } from '@codemirror/view'
 
@@ -31,7 +31,20 @@ const convertFurigana = (element: Text): Node => {
   return element
 }
 
+interface FuriganaSettings {
+  furiganaSource: boolean; 
+}
+
+const DEFAULT_SETTINGS: Partial<FuriganaSettings> = {
+  furiganaSource: true,
+};
+
 export default class MarkdownFurigana extends Plugin {
+  settings: FuriganaSettings;
+
+  // Required to be able to dynamically toggle Editor Extension without reloading plugin
+  extension: ViewPlugin<FuriganaViewPlugin>[] = [];
+
   public postprocessor: MarkdownPostProcessor = (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
     const blockToReplace = el.querySelectorAll(TAGS)
     if (blockToReplace.length === 0) return
@@ -59,12 +72,67 @@ export default class MarkdownFurigana extends Plugin {
 
   async onload() {
     console.log('loading Markdown Furigana plugin')
+
+    await this.loadSettings();
+    this.addSettingTab(new FuriganaSettingsTab(this.app, this));
+
+    // Automatically toggles the Editor Extension on Live Preview
+    // Layout change seems to be called once when booting up
+    this.app.workspace.on('layout-change', () => {
+      const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView)?.getState();
+      this.extension.length = 0;
+      if (this.settings.furiganaSource || !(markdownView.source)) {
+        this.extension.push(viewPlugin);
+      }
+      this.app.workspace.updateOptions();
+    })
+
     this.registerMarkdownPostProcessor(this.postprocessor)
-    this.registerEditorExtension(viewPlugin)
+    this.registerEditorExtension(this.extension)
   }
 
   onunload() {
     console.log('unloading Markdown Furigana plugin')
+  }
+
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
+  }
+}
+
+class FuriganaSettingsTab extends PluginSettingTab {
+  plugin: MarkdownFurigana;
+  constructor(app: App, plugin: MarkdownFurigana) {
+		super(app, plugin);
+		this.plugin = plugin;
+  }
+
+  display(): void {
+    let { containerEl } = this;
+
+    containerEl.empty();
+
+    new Setting(containerEl)
+    .setName('Show Furigana in Source Mode')
+    .addToggle((toggle) => {
+      toggle.setValue(this.plugin.settings.furiganaSource);
+      toggle.onChange(value => {
+        // Dynamically toggle Editor Extension
+        this.plugin.extension.length = 0;
+        const markdownView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView)?.getState()
+        if (value || !markdownView.source) {
+          this.plugin.extension.push(viewPlugin);
+        }
+        this.plugin.app.workspace.updateOptions();
+
+        this.plugin.settings.furiganaSource = value;
+        this.plugin.saveSettings();
+      })
+    });
   }
 }
 
@@ -83,7 +151,7 @@ class RubyWidget extends WidgetType {
   }
 }
 
-const viewPlugin = ViewPlugin.fromClass(class {
+class FuriganaViewPlugin {
   decorations: DecorationSet;
 
   constructor(view: EditorView) {
@@ -146,6 +214,8 @@ const viewPlugin = ViewPlugin.fromClass(class {
     }
     return builder.finish();
   }
-}, {
+}
+
+const viewPlugin = ViewPlugin.fromClass(FuriganaViewPlugin, {
   decorations: (v) => v.decorations,
 })
