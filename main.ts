@@ -2,8 +2,12 @@ import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obs
 import { RangeSetBuilder } from "@codemirror/state"
 import { ViewPlugin, WidgetType, EditorView, ViewUpdate, Decoration, DecorationSet } from '@codemirror/view'
 
-// Regular Expression for {{kanji|kana|kana|...}} format
-const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF])+)((?:\\?\|[^ -\/{-~:-@\[-`]*)+)}/gm;
+// Regular Expression for {{kanji|kana|kana|...}} format - ORIGINAL
+//const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF])+)((?:\\?\|[^ -\/{-~:-@\[-`]*)+)}/gm;
+
+// ADDED - ALL NON-WESTERN SCRIPTS
+const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF\u0E00-\u0E7F\u0590-\u05FF\u0700-\u074F\u20000-\u2A6DF\u2A700-\u2B73F\u2B740-\u2B81F\u2B820-\u2CEAF])+)((?:\\?\|[^ -\/{-~:-@\[-`]*)+)}/gm;
+
 
 // Main Tags to search for Furigana Syntax
 const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table'
