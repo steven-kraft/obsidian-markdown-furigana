@@ -12,7 +12,7 @@ const convertFurigana = (element: Text): Node => {
   const matches = Array.from(element.textContent.matchAll(REGEXP))
   let lastNode = element
   for (const match of matches) {
-    const furi = match[2].split('|').slice(1) // First Element will be empty
+    const furi = match[2].split(/[|\uFF5C]/).slice(1) // First Element will be empty
     const kanji = furi.length === 1 ? [match[1]] : match[1].split('')
     if (kanji.length === furi.length) {
       // Number of Characters in first section must be equal to number of furigana sections (unless only one furigana section)
@@ -130,7 +130,7 @@ const viewPlugin = ViewPlugin.fromClass(class {
       let matches = Array.from(line.text.matchAll(REGEXP))
       for (const match of matches) {
         let add = true
-        const furi = match[2].split("|").slice(1)
+        const furi = match[2].split(/[|\uFF5C]/).slice(1)
         const kanji = furi.length === 1 ? [match[1]] : match[1].split("")
         const from = match.index != undefined ? match.index + line.from : -1
         const to = from + match[0].length
