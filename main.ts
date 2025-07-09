@@ -2,8 +2,8 @@ import { Plugin, MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obs
 import { RangeSetBuilder } from "@codemirror/state"
 import { ViewPlugin, WidgetType, EditorView, ViewUpdate, Decoration, DecorationSet } from '@codemirror/view'
 
-// Regular Expression for {{kanji|kana|kana|...}} format
-const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF])+)((?:\\?\|[^ -\/{-~:-@\[-`]*)+)}/gm;
+// Regular Expression for ANY NON-LATIN CHARACTERS
+const REGEXP = /(?:\{|\uFF5B)((?:[\u0000-\uFFFF])+?)((?:\\?(?:\||\uFF5C)[^}\uFF5D]+?)+?)(?:\}|\uFF5D)/gm;
 
 // Main Tags to search for Furigana Syntax
 const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table'
