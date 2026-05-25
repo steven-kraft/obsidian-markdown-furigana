@@ -6,7 +6,7 @@ import { ViewPlugin, WidgetType, EditorView, ViewUpdate, Decoration, DecorationS
 const REGEXP = /{((?:[\u2E80-\uA4CF\uFF00-\uFFEF])+)((?:\\?\|[^ -\/{-~:-@\[-`]*)+)}/gm;
 
 // Main Tags to search for Furigana Syntax
-const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table'
+const TAGS = 'p, h1, h2, h3, h4, h5, h6, ol, ul, table, div'
 
 const convertFurigana = (element: Text): Node => {
   const matches = Array.from(element.textContent.matchAll(REGEXP))
